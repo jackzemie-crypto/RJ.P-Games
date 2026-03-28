@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - RJ.P Games</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #0f172a; color: white; }
+        .test { margin: 10px 0; padding: 10px; border: 1px solid #333; border-radius: 5px; }
+        .pass { border-color: green; background: rgba(0, 255, 0, 0.1); }
+        .fail { border-color: red; background: rgba(255, 0, 0, 0.1); }
+    </style>
+</head>
+<body>
+    <h1>RJ.P Games - Loading Test</h1>
+    <div id="tests"></div>
+    
+    <script src="movies-data.js"></script>
+    <script src="movies-data-part2.js"></script>
+    <script src="main.js"></script>
+    
+    <script>
+        const tests = document.getElementById('tests');
+        
+        function addTest(name, condition) {
+            const div = document.createElement('div');
+            div.className = 'test ' + (condition ? 'pass' : 'fail');
+            div.innerHTML = `<strong>${name}:</strong> ${condition ? 'PASS' : 'FAIL'}`;
+            tests.appendChild(div);
+        }
+        
+        // Run tests
+        addTest('MOVIES_DATA loaded', typeof MOVIES_DATA !== 'undefined');
+        addTest('MOVIES_DATA_EXTRA loaded', typeof MOVIES_DATA_EXTRA !== 'undefined');
+        addTest('MOVIES_DATA has items', typeof MOVIES_DATA !== 'undefined' && MOVIES_DATA.length > 0);
+        addTest('MOVIES_DATA_EXTRA has items', typeof MOVIES_DATA_EXTRA !== 'undefined' && MOVIES_DATA_EXTRA.length > 0);
+        
+        // Test after initialization
+        setTimeout(() => {
+            addTest('Movies combined after init', typeof MOVIES_DATA !== 'undefined' && MOVIES_DATA.length > 100);
+            addTest('Main functions available', typeof switchSiteTab === 'function');
+        }, 100);
+    </script>
+</body>
+</html>

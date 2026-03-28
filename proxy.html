@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RJ's Proxy</title>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+        font-family: Arial, sans-serif;
+        background-color: #000814; 
+      }
+    
+      /* Dark Blue Gradient Background */
+      #background {
+        position: absolute;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        background: radial-gradient(circle, #001133, #000011); 
+        z-index: 1;
+      }
+    
+      /* Icy blue stars to match the dark blue theme */
+      .star {
+        position: absolute;
+        background: #88ccff; 
+        border-radius: 50%;
+        transform: scale(0);
+        animation: sparkle 2s infinite, drift linear infinite;
+      }
+    
+      @keyframes sparkle {
+        0%, 100% { opacity: 0; transform: scale(0); }
+        50% { opacity: 1; transform: scale(1); }
+      }
+    
+      @keyframes drift {
+        0%, 100% { transform: translate(0, 0); }
+        50% { transform: translate(50px, -50px); }
+      }
+
+      /* Centered UI Container */
+      .center-container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: rgba(0, 25, 70, 0.7);
+        padding: 40px 60px;
+        border-radius: 12px;
+        box-shadow: 0 0 20px rgba(0, 100, 255, 0.3);
+        border: 1px solid rgba(0, 150, 255, 0.3);
+        backdrop-filter: blur(5px);
+      }
+
+      h1 {
+        color: #ffffff;
+        margin: 0 0 20px 0;
+        text-shadow: 0 0 10px rgba(0, 150, 255, 0.8);
+        font-size: 2rem;
+      }
+
+      button {
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        color: #fff;
+        background-color: #0044aa;
+        padding: 12px 24px;
+        border: 1px solid #0066ff;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s, box-shadow 0.3s;
+      }
+
+      button:hover {
+        background-color: #0055cc;
+        box-shadow: 0 0 10px rgba(0, 150, 255, 0.8);
+      }
+    </style>
+</head>
+<body>
+    
+    <div id="background"></div>
+
+    <div class="center-container">
+        <h1>RJ.P Proxy</h1>
+        <button id="proxyBtn">Launch Proxy</button>
+    </div>
+
+    <script>
+      // 1. Generate Stars
+      const numStars = 300;
+      const background = document.getElementById('background');
+
+      for (let i = 0; i < numStars; i++) {
+        const star = document.createElement('div');
+        star.classList.add('star');
+        star.style.width = `${Math.random() * 3}px`;
+        star.style.height = star.style.width;
+        star.style.left = `${Math.random() * 100}vw`;
+        star.style.top = `${Math.random() * 100}vh`;
+
+        // Randomize animation delays so they don't all flash at once
+        star.style.animationDelay = `${Math.random() * 2}s`;
+        background.appendChild(star);
+      }
+
+      // 2. Proxy Logic
+      document.getElementById('proxyBtn').onclick = function() {
+        var link = prompt("Enter URL:");
+        if (!link) return; // Exit if user cancels
+
+        // Add https:// if the user forgets it
+        if (!link.startsWith('http://') && !link.startsWith('https://')) {
+            link = 'https://' + link;
+        }
+
+        var proxy = 'https://api.codetabs.com/v1/proxy?quest=';
+        
+        fetch(proxy + link)
+          .then((response) => response.text())
+          .then((text) => {
+            document.open();
+            document.write(text);
+            document.close();
+            
+            // Fix image/resource links on the loaded page
+            var all = document.getElementsByTagName("*");
+            for (var i = 0, max = all.length; i < max; i++) {
+              if (all[i].src) {
+                all[i].src = new URL(all[i].src, link).href;
+                all[i].src = proxy + all[i].src;
+              }
+            }
+          })
+          .catch(err => alert("Proxy failed to load. The site might be blocking the request."));
+
+        window.onbeforeunload = function(e) {
+          e.preventDefault();
+          alert(e.toString());
+        };
+        
+        function locationHashChanged(e) {
+          e.preventDefault();
+          alert(e);
+          window.location = new URL(e.oldURL, e.newURL).href;
+        }
+        window.onhashchange = locationHashChanged;
+      };
+    </script>
+</body>
+</html>

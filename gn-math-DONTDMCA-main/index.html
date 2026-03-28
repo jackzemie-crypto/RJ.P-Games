@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+  <head>
+
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png" />
+    <link rel="apple-touch-icon" href="favicon.png" />
+    <script>
+      window.addEventListener('beforeunload', function (event) {
+        event.preventDefault()
+        event.returnValue = ''
+        return 'Are you sure you want to leave? Any unsaved changes will be lost.'
+      })
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RJ.P Games</title>
+    <meta name="title" content="RJ.P Games" />
+    <meta
+      name="description"
+      content="Play unbl*cked games like Crazy Cattle 3D and DriveMad on RJ.P Games. Fast, free, no downloads—perfect for school or home."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://gn-math.github.io/" />
+    <meta property="og:title" content="RJ.P Games" />
+    <meta
+      property="og:description"
+      content="Play unbl*cked games like Crazy Cattle 3D and DriveMad on RJ.P Games. Fast, free, no downloads—perfect for school or home."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://gn-math.github.io/" />
+    <meta name="twitter:title" content="RJ.P Games" />
+    <meta
+      name="twitter:description"
+      content="Play unbl*cked games like Crazy Cattle 3D and DriveMad on RJ.P Games. Fast, free, no downloads—perfect for school or home."
+    />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#fb2651" />
+    <style>
+      .request-game-btn {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 0.625rem 1.25rem;
+        border-radius: var(--radius);
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: var(--shadow-sm);
+      }
+      .request-game-btn:hover {
+        background: var(--primary-hover);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+      }
+      .request-game-btn:active {
+        transform: translateY(0);
+      }
+    </style>
+  </head>
+  <body class="dark-mode">
+    <header>
+      <div class="header-content">
+        <div class="logo">
+          <img src="logo.png" alt="RJ.P Games" class="header-logo" width="40" height="40" decoding="async" />
+          RJ.P Games
+        </div>
+        <a href="https://forms.gle/y21aAfFKYwzraWTZ8" target="_blank" class="request-game-btn">
+          Request a Game
+        </a>
+        <div class="search-container">
+          <input type="text" id="searchBar" placeholder="Search zones..." oninput="filterZones()" />
+          <select id="sortOptions" onchange="sortZones()">
+            <option value="name">Name</option>
+            <option value="id">ID (Date)</option>
+            <option value="popular">Popular</option>
+            <option value="trendingDay">Trending (Day)</option>
+            <option value="trendingWeek">Trending (Week)</option>
+            <option value="trendingMonth">Trending (Month)</option>
+          </select>
+          <select id="filterOptions" onchange="filterZones2()">
+            <option value="none">(SELECT TAG)</option>
+          </select>
+        </div>
+        <div class="control-buttons">
+          <button id="proxy" class="control-button" title="Launch Proxy" onclick="window.location.href='proxy.html'">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+          </button>
+          <button id="refresh" class="control-button" title="Refresh all the zones" onclick="listZones()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <polyline points="1 20 1 14 7 14"></polyline>
+              <path d="m3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
+          </button>
+          <button id="settings" class="control-button" title="Settings!">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="m12 1 1.27 2.18.69 2.46 2.46.69L18.6 5.05l1.73 1.73-1.28 2.18-.69 2.46-2.46.69L14.6 13.4l-1.73 1.73-2.18-1.28-2.46-.69-.69-2.46L5.4 8.6 3.67 6.87l1.28-2.18.69-2.46 2.46-.69L9.4 2.82 12 1z"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <nav class="site-tabs" role="tablist" aria-label="Site sections">
+      <button type="button" class="site-tab active" role="tab" aria-selected="true" aria-controls="panel-games" id="tab-games" data-tab="games" onclick="switchSiteTab('games')">Games</button>
+      <button type="button" class="site-tab" role="tab" aria-selected="false" aria-controls="panel-movies" id="tab-movies" data-tab="movies" onclick="switchSiteTab('movies')">Movies</button>
+      <button type="button" class="site-tab" role="tab" aria-selected="false" aria-controls="panel-devs" id="tab-devs" data-tab="devs" onclick="switchSiteTab('devs')">Devs</button>
+    </nav>
+
+    <div id="panel-games" class="site-panel" role="tabpanel" aria-labelledby="tab-games">
+    <main>
+      <details id="allZonesWrapper" open>
+        <summary id="allSummary" style="font-size: 1.2rem; font-weight: bold; cursor: pointer">All Zones</summary>
+        <div id="container">Loading...</div>
+      </details>
+    </main>
+    </div>
+
+    <div id="panel-movies" class="site-panel" role="tabpanel" aria-labelledby="tab-movies" hidden>
+      <section class="movies-page" aria-label="Movies">
+        <div class="movies-toolbar">
+          <input type="search" id="moviesSearch" class="movies-search" placeholder="Search movies…" autocomplete="off" />
+          <select id="moviesSort" class="movies-sort" aria-label="Sort movies">
+            <option value="title">Title (A–Z)</option>
+            <option value="title-desc">Title (Z–A)</option>
+            <option value="year-desc">Year (newest)</option>
+            <option value="year-asc">Year (oldest)</option>
+          </select>
+          <span class="movies-count" id="moviesCount" aria-live="polite"></span>
+        </div>
+        <div id="moviesGrid" class="movies-grid"></div>
+      </section>
+    </div>
+
+    <div id="panel-devs" class="site-panel" role="tabpanel" aria-labelledby="tab-devs" hidden>
+      <section class="devs-page" aria-label="Developers">
+        <div class="devs-clock" id="devsClock" aria-live="polite"></div>
+        <h1 class="devs-title">DEVS</h1>
+        <p class="devs-subtitle">
+          The team behind RJ.P Games. <span class="devs-subtitle-accent">Click on our cards</span> to visit our personal sites and socials!
+        </p>
+        <div class="devs-cards">
+          <a class="dev-card" href="https://guns.lol/zzemie" target="_blank" rel="noopener noreferrer">
+            <div class="dev-card-avatar dev-card-avatar-img-wrap">
+              <img
+                src="logo.png"
+                alt="RJ.P"
+                class="dev-card-avatar-img"
+                width="118"
+                height="118"
+                loading="eager"
+                decoding="async"
+                referrerpolicy="no-referrer"
+              />
+            </div>
+            <span class="dev-card-name">RJ.P</span>
+            <span class="dev-card-role">OWNER</span>
+          </a>
+        </div>
+      </section>
+    </div>
+
+    <div id="zoneViewer">
+      <div class="zone-header">
+        <div class="zone-title">
+          <h2 id="zoneName">zone</h2>
+          <button class="info-button" onclick="showZoneInfo()" title="Zone Information">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+          </button>
+          <span id="zoneId" style="display: none"></span>
+          <a id="zoneAuthor" href="#" target="_blank">by Author</a>
+        </div>
+        <div class="zone-controls">
+          <button onclick="fullscreenZone()">Fullscreen</button>
+          <button onclick="aboutBlank()">Open in New Tab</button>
+          <button onclick="downloadZone()">Download</button>
+          <button onclick="closeZone()">Close</button>
+        </div>
+      </div>
+      <iframe id="zoneFrame"></iframe>
+    </div>
+
+    <div id="popupOverlay">
+      <div class="popup">
+        <div class="popup-header">
+          <h3 id="popupTitle">Title</h3>
+          <button id="popupClose" onclick="closePopup()">×</button>
+        </div>
+        <div id="popupBody">Content will be here</div>
+      </div>
+    </div>
+    <footer>
+      <div class="footer-links">
+        Made by RJ.P
+      </div>
+      <div>
+      </div>
+    </footer>
+
+    <script src="movies-data.js"></script>
+    <script src="movies-data-part2.js"></script>
+    <script src="main.js"></script>
+    <script src="gnmath.js"></script>
+
+    <script>
+      try {
+        const search = new URLSearchParams(window.location.search)
+        const privacy = search.get('privacy')
+        if (privacy) {
+          loadPrivacy()
+        }
+      } catch (error) {}
+    </script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js').catch(function(error) {
+          console.log('Service Worker registration failed:', error);
+        });
+      }
+    </script>
+  </body>
+</html>
+

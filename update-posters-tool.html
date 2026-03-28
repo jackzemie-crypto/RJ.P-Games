@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Movie Posters Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #0f172a;
+            color: #f1f5f9;
+        }
+        .container {
+            background: #1e293b;
+            padding: 30px;
+            border-radius: 12px;
+        }
+        h1 {
+            color: #fc2651;
+        }
+        button {
+            background: #fc2651;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #e91e47;
+        }
+        textarea {
+            width: 100%;
+            height: 400px;
+            background: #0f172a;
+            color: #f1f5f9;
+            border: 1px solid #475569;
+            border-radius: 6px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+        .status {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+        .success {
+            background: #10b981;
+            color: white;
+        }
+        .info {
+            background: #3b82f6;
+            color: white;
+        }
+        .instructions {
+            background: #475569;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎬 Movie Poster Updater</h1>
+        
+        <div class="instructions">
+            <strong>Instructions:</strong><br>
+            1. This tool will automatically update your movies-data.js with real poster URLs<br>
+            2. Click "Load & Update Posters"<br>
+            3. Copy the output and replace your movies-data.js file content
+        </div>
+
+        <button onclick="updatePosters()">Load & Update Posters</button>
+        <button onclick="downloadFile()">Download Updated File</button>
+        <button onclick="copyToClipboard()">Copy to Clipboard</button>
+
+        <div id="status"></div>
+
+        <h3>Updated movies-data.js:</h3>
+        <textarea id="output" placeholder="Click 'Load & Update Posters' to generate updated file..."></textarea>
+    </div>
+
+    <script src="gn-math-DONTDMCA-main/movies-data.js"></script>
+    <script src="movies-data.js"></script>
+    <script>
+        function updatePosters() {
+            try {
+                // Get the gn-math movies (from window.MOVIES_DATA)
+                const gnMathMovies = window.MOVIES_DATA || [];
+                
+                // Get your movies (from ALL_MOVIES)
+                const yourMovies = window.ALL_MOVIES || [];
+                
+                if (gnMathMovies.length === 0) {
+                    showStatus('Error: Could not load gn-math movies data', 'error');
+                    return;
+                }
+                
+                if (yourMovies.length === 0) {
+                    showStatus('Error: Could not load your movies data', 'error');
+                    return;
+                }
+                
+                // Create a map for easy lookup
+                const posterMap = {};
+                gnMathMovies.forEach(movie => {
+                    const key = movie.title.toLowerCase().trim();
+                    posterMap[key] = movie.imageUrl;
+                });
+                
+                // Update your movies
+                let updatedCount = 0;
+                const updatedMovies = yourMovies.map(movie => {
+                    const key = movie.name.toLowerCase().trim();
+                    if (posterMap[key]) {
+                        updatedCount++;
+                        return {
+                            ...movie,
+                            cover: posterMap[key]
+                        };
+                    }
+                    return movie;
+                });
+                
+                // Generate the new file content
+                let output = '// Complete movie collection - ALL movies with REAL POSTERS!\n';
+                output += 'const ALL_MOVIES = [\n';
+                
+                updatedMovies.forEach((movie, index) => {
+                    output += '    {\n';
+                    output += `        id: ${movie.id},\n`;
+                    output += `        name: "${movie.name}",\n`;
+                    output += `        cover: "${movie.cover}",\n`;
+                    output += `        url: "${movie.url}",\n`;
+                    output += `        author: "${movie.author}",\n`;
+                    output += `        year: ${movie.year},\n`;
+                    output += `        genre: ${JSON.stringify(movie.genre)}\n`;
+                    output += '    }';
+                    if (index < updatedMovies.length - 1) {
+                        output += ',';
+                    }
+                    output += '\n';
+                });
+                
+                output += '];\n';
+                
+                document.getElementById('output').value = output;
+                showStatus(`✅ Success! Updated ${updatedCount} out of ${yourMovies.length} movies with real posters!`, 'success');
+                
+            } catch (error) {
+                showStatus('Error: ' + error.message, 'error');
+                console.error(error);
+            }
+        }
+        
+        function downloadFile() {
+            const content = document.getElementById('output').value;
+            if (!content || content.includes('placeholder')) {
+                alert('Please click "Load & Update Posters" first!');
+                return;
+            }
+            
+            const blob = new Blob([content], { type: 'text/javascript' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'movies-data-UPDATED.js';
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            showStatus('✅ File downloaded! Replace your movies-data.js with this file.', 'success');
+        }
+        
+        function copyToClipboard() {
+            const textarea = document.getElementById('output');
+            if (!textarea.value || textarea.value.includes('placeholder')) {
+                alert('Please click "Load & Update Posters" first!');
+                return;
+            }
+            
+            textarea.select();
+            document.execCommand('copy');
+            showStatus('✅ Copied to clipboard!', 'success');
+        }
+        
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.className = 'status ' + type;
+            statusDiv.textContent = message;
+        }
+    </script>
+</body>
+</html>

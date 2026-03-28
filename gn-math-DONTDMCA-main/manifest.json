@@ -1,0 +1,21 @@
+{
+  "name": "RJ.P Games",
+  "short_name": "RJ.P Games",
+  "description": "Play unblocked games like Crazy Cattle 3D and DriveMad on RJ.P Games. Fast, free, no downloads—perfect for school or home.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#fc2651",
+  "icons": [
+    {
+      "src": "favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

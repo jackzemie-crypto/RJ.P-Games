@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Poster Fetcher - TMDB</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #0f172a;
+            color: #f1f5f9;
+        }
+        .container {
+            background: #1e293b;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #fc2651;
+            margin-top: 0;
+        }
+        .setup {
+            background: #334155;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #475569;
+            border-radius: 6px;
+            background: #1e293b;
+            color: #f1f5f9;
+            font-size: 14px;
+        }
+        button {
+            background: #fc2651;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            margin: 10px 5px 10px 0;
+        }
+        button:hover {
+            background: #e91e47;
+        }
+        button:disabled {
+            background: #64748b;
+            cursor: not-allowed;
+        }
+        .results {
+            margin-top: 20px;
+        }
+        .movie-item {
+            background: #334155;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        .movie-item img {
+            width: 100px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        .movie-info {
+            flex: 1;
+        }
+        .movie-name {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        .poster-url {
+            background: #1e293b;
+            padding: 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            word-break: break-all;
+            margin-top: 5px;
+        }
+        .copy-btn {
+            padding: 6px 12px;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+        .status.success {
+            background: #10b981;
+            color: white;
+        }
+        .status.error {
+            background: #ef4444;
+            color: white;
+        }
+        .status.info {
+            background: #3b82f6;
+            color: white;
+        }
+        .instructions {
+            background: #475569;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .instructions a {
+            color: #fc2651;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .instructions a:hover {
+            text-decoration: underline;
+        }
+        .progress {
+            margin: 20px 0;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #1e293b;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #fc2651, #ff4d75);
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎬 Movie Poster Fetcher</h1>
+        
+        <div class="instructions">
+            <strong>How to use:</strong><br>
+            1. Get a free API key from <a href="https://www.themoviedb.org/settings/api" target="_blank">TMDB</a> (takes 2 minutes)<br>
+            2. Paste your API key below<br>
+            3. Click "Fetch All Posters"<br>
+            4. Copy the poster URLs and update your movies-data.js file
+        </div>
+
+        <div class="setup">
+            <label for="apiKey"><strong>TMDB API Key:</strong></label>
+            <input type="text" id="apiKey" placeholder="Paste your TMDB API key here...">
+            
+            <button onclick="fetchAllPosters()" id="fetchBtn">Fetch All Posters</button>
+            <button onclick="exportToFile()" id="exportBtn" disabled>Export Results</button>
+            <button onclick="clearResults()">Clear Results</button>
+        </div>
+
+        <div id="status"></div>
+        
+        <div class="progress" id="progressContainer" style="display: none;">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill">0%</div>
+            </div>
+        </div>
+
+        <div class="results" id="results"></div>
+    </div>
+
+    <script>
+        const API_KEY_STORAGE = 'tmdb_api_key';
+        const RESULTS_STORAGE = 'poster_results';
+        
+        // Load saved API key
+        window.onload = function() {
+            const savedKey = localStorage.getItem(API_KEY_STORAGE);
+            if (savedKey) {
+                document.getElementById('apiKey').value = savedKey;
+            }
+            
+            const savedResults = localStorage.getItem(RESULTS_STORAGE);
+            if (savedResults) {
+                displayResults(JSON.parse(savedResults));
+            }
+        };
+
+        // Your movie list (first 50 movies from movies-data.js)
+        const movies = [
+            { id: 1, name: "Deadpool and Wolverine", year: 2024 },
+            { id: 2, name: "Captain America: The First Avenger", year: 2011 },
+            { id: 3, name: "Captain America: Brave New World", year: 2025 },
+            { id: 4, name: "Dog Man", year: 2025 },
+            { id: 5, name: "Spider-Man: Into the Spider-Verse", year: 2018 },
+            { id: 6, name: "Spider-Man: Across the Spider-Verse", year: 2023 },
+            { id: 7, name: "Moana 2", year: 2024 },
+            { id: 8, name: "The Lego Batman Movie", year: 2017 },
+            { id: 9, name: "The Super Mario Bros. Movie", year: 2023 },
+            { id: 10, name: "Sonic the Hedgehog", year: 2020 },
+            { id: 11, name: "Sonic the Hedgehog 2", year: 2022 },
+            { id: 12, name: "Sonic the Hedgehog 3", year: 2024 },
+            { id: 13, name: "Sonic OVA", year: 1996 },
+            { id: 14, name: "Teenage Mutant Ninja Turtles: Mutant Mayhem", year: 2023 },
+            { id: 15, name: "Inside Out", year: 2015 },
+            { id: 16, name: "Inside Out 2", year: 2024 },
+            { id: 17, name: "The Lego Movie", year: 2014 },
+            { id: 18, name: "The Lego Movie 2", year: 2019 },
+            { id: 19, name: "The Regular Show: The Movie", year: 2015 },
+            { id: 20, name: "Scooby-Doo! and the Witch's Ghost", year: 1999 },
+            // Add more movies as needed...
+        ];
+
+        async function searchMovie(title, year, apiKey) {
+            const searchUrl = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(title)}&year=${year}`;
+            const response = await fetch(searchUrl);
+            const data = await response.json();
+            
+            if (data.results && data.results.length > 0) {
+                const movie = data.results[0];
+                if (movie.poster_path) {
+                    return `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+                }
+            }
+            return null;
+        }
+
+        async function fetchAllPosters() {
+            const apiKey = document.getElementById('apiKey').value.trim();
+            
+            if (!apiKey) {
+                showStatus('Please enter your TMDB API key!', 'error');
+                return;
+            }
+            
+            // Save API key
+            localStorage.setItem(API_KEY_STORAGE, apiKey);
+            
+            const fetchBtn = document.getElementById('fetchBtn');
+            const exportBtn = document.getElementById('exportBtn');
+            const progressContainer = document.getElementById('progressContainer');
+            const progressFill = document.getElementById('progressFill');
+            
+            fetchBtn.disabled = true;
+            exportBtn.disabled = true;
+            progressContainer.style.display = 'block';
+            
+            showStatus('Fetching posters from TMDB...', 'info');
+            
+            const results = [];
+            
+            for (let i = 0; i < movies.length; i++) {
+                const movie = movies[i];
+                const progress = Math.round(((i + 1) / movies.length) * 100);
+                progressFill.style.width = progress + '%';
+                progressFill.textContent = progress + '%';
+                
+                try {
+                    const posterUrl = await searchMovie(movie.name, movie.year, apiKey);
+                    
+                    if (posterUrl) {
+                        results.push({
+                            id: movie.id,
+                            name: movie.name,
+                            year: movie.year,
+                            posterUrl: posterUrl
+                        });
+                    }
+                    
+                    // Wait 250ms between requests to respect API rate limits
+                    await new Promise(resolve => setTimeout(resolve, 250));
+                } catch (error) {
+                    console.error(`Error fetching ${movie.name}:`, error);
+                }
+            }
+            
+            localStorage.setItem(RESULTS_STORAGE, JSON.stringify(results));
+            displayResults(results);
+            
+            showStatus(`Successfully fetched ${results.length} out of ${movies.length} posters!`, 'success');
+            fetchBtn.disabled = false;
+            exportBtn.disabled = false;
+            progressContainer.style.display = 'none';
+        }
+
+        function displayResults(results) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<h2>Results (' + results.length + ' posters found)</h2>';
+            
+            results.forEach(movie => {
+                const movieDiv = document.createElement('div');
+                movieDiv.className = 'movie-item';
+                movieDiv.innerHTML = `
+                    <img src="${movie.posterUrl}" alt="${movie.name}">
+                    <div class="movie-info">
+                        <div class="movie-name">${movie.name} (${movie.year})</div>
+                        <div class="poster-url">${movie.posterUrl}</div>
+                        <button class="copy-btn" onclick="copyToClipboard('${movie.posterUrl}', this)">Copy URL</button>
+                    </div>
+                `;
+                resultsDiv.appendChild(movieDiv);
+            });
+            
+            document.getElementById('exportBtn').disabled = false;
+        }
+
+        function copyToClipboard(text, button) {
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = '✓ Copied!';
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 2000);
+            });
+        }
+
+        function exportToFile() {
+            const results = JSON.parse(localStorage.getItem(RESULTS_STORAGE) || '[]');
+            
+            let output = '// Updated movie posters from TMDB\n';
+            output += '// Copy these cover URLs into your movies-data.js file\n\n';
+            
+            results.forEach(movie => {
+                output += `// Movie ID: ${movie.id}\n`;
+                output += `// ${movie.name} (${movie.year})\n`;
+                output += `cover: "${movie.posterUrl}",\n\n`;
+            });
+            
+            const blob = new Blob([output], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'movie-posters-update.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            showStatus('Exported to file!', 'success');
+        }
+
+        function clearResults() {
+            if (confirm('Clear all results?')) {
+                localStorage.removeItem(RESULTS_STORAGE);
+                document.getElementById('results').innerHTML = '';
+                document.getElementById('exportBtn').disabled = true;
+                showStatus('Results cleared', 'info');
+            }
+        }
+
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.className = 'status ' + type;
+            statusDiv.textContent = message;
+            statusDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
