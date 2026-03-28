@@ -1005,3 +1005,33 @@ listZones();
 HTMLCanvasElement.prototype.toDataURL = function (...args) {
     return "";
 };
+
+
+// Dev's Tab Functions
+function loadDevsTab() {
+    // Update current date
+    const now = new Date();
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const dayName = days[now.getDay()];
+    const monthName = months[now.getMonth()];
+    
+    const dateStr = `${year}/${month} - ${dayName}, ${monthName} ${day}, ${year}`;
+    const dateEl = document.getElementById('currentDate');
+    if (dateEl) {
+        dateEl.textContent = dateStr;
+    }
+}
+
+// Update switchTab function to handle devs tab
+const originalSwitchTab = switchTab;
+switchTab = function(tabName) {
+    originalSwitchTab(tabName);
+    if (tabName === 'devs') {
+        loadDevsTab();
+    }
+};
