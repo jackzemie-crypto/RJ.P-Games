@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png" />
+    <link rel="apple-touch-icon" href="favicon.png" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Devs - RJ.P Games</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      .devs-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        text-align: center;
+      }
+      
+      .devs-title {
+        font-size: 3rem;
+        font-weight: bold;
+        font-style: italic;
+        margin-bottom: 1rem;
+        color: var(--text);
+      }
+      
+      .devs-subtitle {
+        font-size: 1rem;
+        color: var(--text-secondary);
+        margin-bottom: 3rem;
+      }
+      
+      .devs-subtitle a {
+        color: var(--primary);
+        text-decoration: none;
+      }
+      
+      .devs-subtitle a:hover {
+        text-decoration: underline;
+      }
+      
+      .dev-cards {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+      }
+      
+      .dev-card {
+        background: var(--card-bg);
+        border-radius: var(--radius);
+        padding: 2rem;
+        width: 300px;
+        box-shadow: var(--shadow-lg);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      
+      .dev-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      }
+      
+      .dev-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        margin: 0 auto 1rem;
+        background: var(--bg-secondary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+      
+      .dev-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      
+      .dev-name {
+        font-size: 1.5rem;
+        font-weight: bold;
+        font-style: italic;
+        color: var(--text);
+        margin-bottom: 0.5rem;
+      }
+      
+      .dev-role {
+        color: var(--primary);
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+      }
+      
+      .dev-link {
+        display: inline-block;
+        background: var(--primary);
+        color: white;
+        padding: 0.5rem 1.5rem;
+        border-radius: var(--radius);
+        text-decoration: none;
+        font-weight: 600;
+        transition: background 0.3s ease;
+      }
+      
+      .dev-link:hover {
+        background: var(--primary-hover);
+      }
+      
+      .footer-note {
+        margin-top: 3rem;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+      }
+    </style>
+  </head>
+  <body class="dark-mode">
+    <header>
+      <div class="header-content">
+        <div class="logo">
+          <img src="logo.png" alt="RJ.P Games" style="height: 40px; vertical-align: middle; margin-right: 10px;">
+          RJ.P Games
+        </div>
+        <nav style="display: flex; gap: 1rem; margin-left: auto; margin-right: 2rem;">
+          <a href="index.html" style="color: var(--text); text-decoration: none; padding: 0.5rem 1rem; border-radius: var(--radius); transition: background 0.3s;">GAMES</a>
+          <a href="index.html#movies" style="color: var(--text); text-decoration: none; padding: 0.5rem 1rem; border-radius: var(--radius); transition: background 0.3s;">MOVIES</a>
+          <a href="devs.html" style="color: var(--primary); text-decoration: none; padding: 0.5rem 1rem; border-radius: var(--radius); background: rgba(251, 38, 81, 0.1);">DEVS</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <div class="devs-container">
+        <h1 class="devs-title">DEVS</h1>
+        <p class="devs-subtitle">
+          The team behind RJ.P Games. <a href="https://guns.lol/zzemie" target="_blank">Click on our cards</a> to visit our personal sites and socials!
+        </p>
+
+        <div class="dev-cards">
+          <div class="dev-card">
+            <div class="dev-avatar">
+              <img src="https://guns.lol/zzemie/avatar.png" alt="RJ.P" onerror="this.parentElement.innerHTML='<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'80\' height=\'80\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\'><path d=\'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2\'></path><circle cx=\'12\' cy=\'7\' r=\'4\'></circle></svg>'">
+            </div>
+            <h2 class="dev-name">RJ.P</h2>
+            <p class="dev-role">GITHUB</p>
+            <a href="https://guns.lol/zzemie" target="_blank" class="dev-link">Visit Profile</a>
+          </div>
+        </div>
+
+        <p class="footer-note">
+          Made by RJ.P
+        </p>
+      </div>
+    </main>
+
+    <footer>
+      <div class="footer-links">
+        Made by RJ.P
+      </div>
+    </footer>
+  </body>
+</html>
