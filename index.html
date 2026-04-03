@@ -1,223 +1,82 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Czone</title>
+  <link rel="icon" type="image/svg+xml" href="/logo.svg">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TE4NT1V017"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-TE4NT1V017');
+  </script>
+  <style>
+    @font-face {
+      font-family: 'Swordskull';
+      src: url('/fonts/Swordskull_PERSONAL_USE.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
 
-    <link rel="icon" type="image/png" href="favicon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png" />
-    <link rel="apple-touch-icon" href="favicon.png" />
-    <script>
-      window.addEventListener('beforeunload', function (event) {
-        event.preventDefault()
-        event.returnValue = ''
-        return 'Are you sure you want to leave? Any unsaved changes will be lost.'
-      })
-    </script>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RJ.P Games</title>
-    <meta name="title" content="RJ.P Games" />
-    <meta
-      name="description"
-      content="Play unbl*cked games like Crazy Cattle 3D and DriveMad on RJ.P Games. Fast, free, no downloads—perfect for school or home."
-    />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://gn-math.github.io/" />
-    <meta property="og:title" content="RJ.P Games" />
-    <meta
-      property="og:description"
-      content="Play unbl*cked games like Crazy Cattle 3D and DriveMad on RJ.P Games. Fast, free, no downloads—perfect for school or home."
-    />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content="https://gn-math.github.io/" />
-    <meta name="twitter:title" content="RJ.P Games" />
-    <meta
-      name="twitter:description"
-      content="Play unbl*cked games like Crazy Cattle 3D and DriveMad on RJ.P Games. Fast, free, no downloads—perfect for school or home."
-    />
-    <link rel="stylesheet" href="style.css" />
-    <link rel="manifest" href="manifest.json" />
-    <meta name="theme-color" content="#fb2651" />
-    <style>
-      .request-game-btn {
-        background: var(--primary);
-        color: white;
-        border: none;
-        padding: 0.625rem 1.25rem;
-        border-radius: var(--radius);
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        box-shadow: var(--shadow-sm);
-      }
-      .request-game-btn:hover {
-        background: var(--primary-hover);
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-lg);
-      }
-      .request-game-btn:active {
-        transform: translateY(0);
-      }
-    </style>
-  </head>
-  <body class="dark-mode">
-    <header>
-      <div class="header-content">
-        <div class="logo">
-          <img src="logo.png" alt="RJ.P Games" style="height: 40px; vertical-align: middle; margin-right: 10px;">
-          RJ.P Games
-        </div>
-        <a href="https://forms.gle/y21aAfFKYwzraWTZ8" target="_blank" class="request-game-btn">
-          Request a Game
-        </a>
-        <div class="search-container">
-          <input type="text" id="searchBar" placeholder="Search..." oninput="filterZones()" />
-          <select id="sortOptions" onchange="sortZones()">
-            <option value="name">Name</option>
-            <option value="id">ID (Date)</option>
-            <option value="popular">Popular</option>
-            <option value="trendingDay">Trending (Day)</option>
-            <option value="trendingWeek">Trending (Week)</option>
-            <option value="trendingMonth">Trending (Month)</option>
-          </select>
-          <select id="filterOptions" onchange="filterZones2()">
-            <option value="none">(SELECT TAG)</option>
-          </select>
-        </div>
-        <div class="control-buttons">
-          <button id="proxy" class="control-button" title="Launch Proxy" onclick="window.location.href='proxy.html'">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="2" y1="12" x2="22" y2="12"></line>
-              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-            </svg>
-          </button>
-          <button id="refresh" class="control-button" title="Refresh all the zones" onclick="listZones()">
-            <img src="refresh-icon.png" alt="refresh" />
-          </button>
-          <button id="settings" class="control-button" title="Settings!">
-            <img src="setting.png" alt="settings" />
-          </button>
-        </div>
-      </div>
-    </header>
-    <main>
-      <div class="tab-container">
-        <div class="tab-buttons">
-          <button class="tab-button active" onclick="switchTab('games')">Games</button>
-          <button class="tab-button" onclick="switchTab('movies')">Movies</button>
-          <button class="tab-button" onclick="switchTab('devs')">Dev's</button>
-        </div>
-      </div>
-      
-      <div id="gamesTab" class="tab-content active">
-        <details id="allZonesWrapper" open>
-          <summary id="allSummary" style="font-size: 1.2rem; font-weight: bold; cursor: pointer">All Zones</summary>
-          <div id="container">Loading...</div>
-        </details>
-      </div>
-      
-      <div id="moviesTab" class="tab-content">
-        <details id="allMoviesWrapper" open>
-          <summary id="allMoviesSummary" style="font-size: 1.2rem; font-weight: bold; cursor: pointer">All Movies</summary>
-          <div id="movieContainer">Loading movies...</div>
-        </details>
-      </div>
-      
-      <div id="devsTab" class="tab-content">
-        <div class="devs-hero">
-          <div class="devs-date" id="currentDate">2025/16 - Sat, Mar 29, 2025</div>
-          
-          <h1 class="devs-title">DEVS</h1>
-          
-          <p class="devs-subtitle">
-            The team behind RJ.P Games. <a href="#" class="devs-link" onclick="window.open('https://forms.gle/y21aAfFKYwzraWTZ8', '_blank'); return false;">Click on our cards</a> to visit our<br>
-            personal sites and socials!
-          </p>
-          
-          <div class="devs-cards">
-            <div class="dev-card">
-              <div class="dev-avatar">
-                <img src="logo.png" alt="RJ.P" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect width=%22100%22 height=%22100%22 fill=%22%231e293b%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23fc2651%22 font-size=%2240%22 font-weight=%22bold%22%3ERJ%3C/text%3E%3C/svg%3E'">
-              </div>
-              <h3 class="dev-name">RJ.P</h3>
-              <p class="dev-role">OWNER</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </main>
-
-    <div id="zoneViewer">
-      <div class="zone-header">
-        <div class="zone-title">
-          <h2 id="zoneName">zone</h2>
-          <button class="info-button" onclick="showZoneInfo()" title="Zone Information">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="12" y1="16" x2="12" y2="12"></line>
-              <line x1="12" y1="8" x2="12.01" y2="8"></line>
-            </svg>
-          </button>
-          <span id="zoneId" style="display: none"></span>
-          <a id="zoneAuthor" href="#" target="_blank">by Author</a>
-        </div>
-        <div class="zone-controls">
-          <button onclick="fullscreenZone()">Fullscreen</button>
-          <button onclick="aboutBlank()">Open in New Tab</button>
-          <button onclick="downloadZone()">Download</button>
-          <button onclick="closeZone()">Close</button>
-        </div>
-      </div>
-      <iframe id="zoneFrame"></iframe>
-    </div>
-
-    <div id="popupOverlay">
-      <div class="popup">
-        <div class="popup-header">
-          <h3 id="popupTitle">Title</h3>
-          <button id="popupClose" onclick="closePopup()">×</button>
-        </div>
-        <div id="popupBody">Content will be here</div>
-      </div>
-    </div>
-    <footer>
-      <div class="footer-links">
-        Made by RJ.P
-      </div>
-      <div>
-      </div>
-    </footer>
-
-    <script src="movies-data.js"></script>
-    <script src="script.js"></script>
-
-    <script>
-      try {
-        const search = new URLSearchParams(window.location.search)
-        const privacy = search.get('privacy')
-        if (privacy) {
-          loadPrivacy()
-        }
-      } catch (error) {}
-    </script>
-    <script>
-      navigator.serviceWorker.register(location.protocol + '//' + location.hostname + '/sw.js')
-    </script>
-  </body>
+    body {
+      font-family: 'Swordskull', 'Inter', sans-serif;
+      background-color: #000000;
+      color: #fafafa;
+      margin: 0;
+      padding: 0;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0); }
+      33% { transform: translate(30px, -50px); }
+      66% { transform: translate(-20px, 20px); }
+    }
+    
+    @keyframes shimmer {
+      0% { transform: translateX(-100%) skewX(-15deg); }
+      100% { transform: translateX(200%) skewX(-15deg); }
+    }
+    .animate-float {
+      animation: float 20s ease-in-out infinite;
+    }
+    .shimmer-btn::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 50%; height: 100%;
+      background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
+      animation: shimmer 3s infinite;
+      pointer-events: none;
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--surface);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--surface-active);
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--surface-hover);
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: var(--surface-hover);
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
 </html>
-
